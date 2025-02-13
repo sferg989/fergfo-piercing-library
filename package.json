@@ -1,9 +1,16 @@
 {
   "name": "@sferg989/fergfo-piercing-library",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/cfHelpers/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -13,23 +20,21 @@
     "url": "git+https://github.com/sferg989/fergfo-piercing-library.git"
   },
   "files": [
-    "src",
-    "index.ts"
+    "dist"
   ],
   "keywords": [
     "piercing-library"
   ],
   "scripts": {
     "prebuild": "rm -rf ./dist",
-    "build": "npm run build.host-inline-script; npm run build.message-bus-inline-script ; npm run build.lib",
-    "build.host-inline-script": "tsc && vite build -c ./piercing-fragment-host.vite.config.ts",
-    "build.message-bus-inline-script": "tsc && vite build -c ./message-bus.vite.config.ts",
-    "build.lib": "tsc && vite build",
-    "prebuild.watch": "npm run prebuild",
-    "build.watch": "concurrently 'npm run build.host-inline-script.watch' 'npm run build.message-bus-inline-script.watch' 'npm run build.lib.watch'",
-    "build.host-inline-script.watch": "tsc && vite build -c ./piercing-fragment-host.vite.config.ts -w",
-    "build.message-bus-inline-script.watch": "tsc && vite build -c ./message-bus.vite.config.ts -w",
-    "build.lib.watch": "tsc && vite build -w"
+    "build": "npm run build:all",
+    "build:all": "npm run build:scripts && npm run build:lib",
+    "build:scripts": "npm run build:host-script && npm run build:message-bus-script",
+    "build:host-script": "vite build -c ./piercing-fragment-host.vite.config.ts",
+    "build:message-bus-script": "vite build -c ./message-bus.vite.config.ts",
+    "build:lib": "vite build",
+    "build:watch": "concurrently 'npm run build:host-script -- -w' 'npm run build:message-bus-script -- -w' 'npm run build:lib -- -w'",
+    "prepublishOnly": "npm run build:all"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^3.14.1",

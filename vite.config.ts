@@ -8,6 +8,8 @@ export default defineConfig({
     react(),
     dts({
       insertTypesEntry: true,
+      include: ["src/cfHelpers"],
+      rollupTypes: true,
     }),
   ],
   build: {
@@ -16,7 +18,7 @@ export default defineConfig({
       entry: path.resolve(__dirname, "src/cfHelpers/index.ts"),
       name: "PiercingLibrary",
       formats: ["es"],
-      fileName: "index",
+      fileName: (format) => `index.js`,
     },
     rollupOptions: {
       external: ["react", "react-dom"],
